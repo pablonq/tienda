@@ -8,7 +8,7 @@
 }; */
 import React from 'react'
 
-const InputLabel = ({label, type, name, id, placeholder, error}) => {
+const InputLabel = ({label, type, name, id, placeholder, error, onChange}) => {
   return (
     <div>
       <label
@@ -23,8 +23,9 @@ const InputLabel = ({label, type, name, id, placeholder, error}) => {
         id= {id}
         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder={placeholder}
+        onChange={onChange}
       />
-      <small className="text-red-500">{error}</small>
+      {error && <small className="text-red-500">{error}</small>}
     </div>
   );
 };
