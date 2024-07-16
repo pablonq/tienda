@@ -2,18 +2,41 @@ import Button from "../components/Button";
 import InputLabel from "../components/InputLabel";
 import{Formik} from "formik";
 import * as Yup from "yup";
+import {useState} from "react";
+import {Api} from "../services/Api";
 
 function Register() {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
   console.log("Register component mounted");
   const initialValues ={
-    name: "",
+    name: "Pablo Navarro",
     email: "",
     password: "",
     confirmPassword: ""
     
   }
-  const onSubmit = (values: typeof initialValues) => {
-    console.log(values);
+  const onSubmit = async (values, { setSubmitting }) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await Api.post('/register', values);
+      if (response.statusCode === 200) {
+        setSuccess(true);
+        console.log('Registro exitoso:', response.data);
+        // Aquí podrías redirigir al usuario o mostrar un mensaje de éxito
+      } else {
+        setError('Error en el registro: ' + response.data.message);
+      }
+    } catch (error) {
+      setError('Error al enviar la solicitud: ' + error.message);
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
+    }
   };
 
   const validationSchema = Yup.object({
@@ -41,6 +64,9 @@ function Register() {
               <h1 className="text-center text-xl font-bold leading-tight text-gray-900 md:text-2xl dark:text-white">
                 Regístrate
               </h1>
+              {isLoading && <p>Cargando...</p>}
+{error && <p className="text-red-500">{error}</p>}
+{success && <p className="text-green-500">Registro exitoso!</p>}
               <Formik
               initialValues={{initialValues}}
               onSubmit={onSubmit}
@@ -54,7 +80,6 @@ function Register() {
                   handleSubmit,
                   
                 }) => (
-                  
                 
                   <form className="space-y-5" action="#" method="POST" onSubmit={handleSubmit}>
                 <InputLabel
