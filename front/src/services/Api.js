@@ -3,25 +3,24 @@ export class Api {
 
   static async post(url, data) {
     try {
+      
       const response = await fetch(`${Api.baseUrl}${url}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify(data),
       });
 
-      // Log the response text for debugging
-      const text = await response.text();
-      console.log('Response text:', text);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Something went wrong');
+      }
 
-      // Try to parse the JSON response
-      const dataResponse = JSON.parse(text);
-
-      return {
-        statusCode: response.status,
-        data: dataResponse,
-      };
+      return await response.json();
     } catch (error) {
-      console.error('Error en la petición:', error);
+      console.error('Error in request:', error);
       throw error;
     }
   }

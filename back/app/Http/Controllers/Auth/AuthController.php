@@ -7,24 +7,33 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use JWTAuth;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
-    {
-        try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-            ]);
-            $token = JWTAuth::fromUser($user);
-            return response()->json(compact('user', 'token'), 201);
-        } catch (\Exception $e) {
-            \Log::error('Registration error: ' . $e->getMessage());
-            return response()->json(['error' => 'Registration failed'], 500);
-        }
+  public function register(RegisterRequest $request): JsonResponse
+{
+    try {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'token' => $token
+        ], 201);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Registration failed',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     public function login(LoginRequest $request)
     {

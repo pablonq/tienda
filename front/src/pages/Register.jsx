@@ -19,23 +19,14 @@ function Register() {
     confirmPassword: ""
     
   }
-  const onSubmit = async (values, { setSubmitting }) => {
-    setIsLoading(true);
-    setError(null);
+  const onSubmit = async (values) => {
     try {
       const response = await Api.post('/register', values);
-      if (response.statusCode === 200) {
-        setSuccess(true);
-        console.log('Registro exitoso:', response.data);
-        // Aquí podrías redirigir al usuario o mostrar un mensaje de éxito
-      } else {
-        setError('Error en el registro: ' + response.data.message);
-      }
+      console.log('Registration successful:', response);
+      // Handle success
     } catch (error) {
-      setError('Error al enviar la solicitud: ' + error.message);
-    } finally {
-      setIsLoading(false);
-      setSubmitting(false);
+      console.error('Registration error:', error.message);
+      // Handle error
     }
   };
 
